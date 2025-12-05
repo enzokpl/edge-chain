@@ -3,13 +3,30 @@ package io.github.enzokpl.edgechain;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Default implementation of {@link Chain} using a singly linked list structure.
+ *
+ * @param <T> The type of the Node data.
+ * @param <R> The type of the Edge/Relation data.
+ */
 public class LinkedChain<T, R> implements Chain<T, R> {
 
     private static class InternalNode<T, R> implements Chain.Node<T, R> {
+
+        // The value stored in this node
         private final T data;
+
+        // The edge connecting this node to the next
         private R relationToNext;
+
+        // Reference to the next node in the list
         private InternalNode<T, R> next;
 
+        /**
+         * Creates a new node with data.
+         *
+         * @param data The value to store.
+         */
         public InternalNode(T data) {
             this.data = data;
         }
@@ -35,9 +52,23 @@ public class LinkedChain<T, R> implements Chain<T, R> {
         }
     }
 
+    // Pointer to the start of the chain
     private InternalNode<T, R> head;
+
+    // Pointer to the end of the chain for O(1) appends
     private InternalNode<T, R> tail;
+
+    // Tracks the number of elements
     private int size = 0;
+
+    /**
+     * Constructs an empty LinkedChain.
+     */
+    public LinkedChain() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
 
     @Override
     public void addFirst(T data) {
@@ -55,6 +86,7 @@ public class LinkedChain<T, R> implements Chain<T, R> {
         if (head == null) {
             throw new IllegalStateException("Chain is empty. Use addFirst.");
         }
+
         InternalNode<T, R> n = new InternalNode<>(data);
         this.tail.relationToNext = relation;
         this.tail.next = n;
